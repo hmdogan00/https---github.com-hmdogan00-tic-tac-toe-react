@@ -41,6 +41,7 @@ class Game extends React.Component {
     this.state = {
       history: [{
         squares: Array(9).fill(null),
+        //squares: ["X", "O", null, null, null, null, "O", null, null],
         rowMove: null,
         colMove: null,
       }],
@@ -59,29 +60,24 @@ class Game extends React.Component {
       return;
     }
     squares[i] = this.state.xIsNext ? "X" : "O";
-    this.setState({
-        history: history.concat([{squares:squares, rowMove: Math.floor(i / 3 + 1), colMove: i % 3 + 1}]), 
-        stepNumber: history.length,
-        xIsNext: !this.state.xIsNext
-      });
-    /*const index = p.getBestMove(squares)
-    if ( index === null ){
-      const map = p.nodesMap;
-      let val = -100
-      let move;
-      while ( true ){
-        move = map.get(val)
-        console.log(move);
-        val++;
-        if ( typeof move === 'string' ){
-          this.handleClick(parseInt(move.substring(0,1)))
-          break;
-        }
-      }
+    if( this.state.xIsNext ){
+      this.aiPlay(squares,i);
     }
-    else{
-      this.handleClick(index);
-    }*/
+  }
+  aiPlay(squares,userMove){
+    const history = this.state.history.slice(0, this.state.stepNumber + 1 );
+    const index = this.player.getBestMove(squares.slice(), false)
+    console.log(index)
+    const nextSquares = squares.slice();
+    nextSquares[index] = "O";
+    this.setState({
+        history: history.concat([
+          {squares:squares, rowMove: Math.floor(userMove / 3 + 1), colMove: userMove % 3 + 1},
+          {squares:nextSquares, rowMove: Math.floor(index / 3 + 1), colMove: index % 3 + 1}
+        ]), 
+        stepNumber: history.length + 1,
+        xIsNext: true
+      });
   }
   jumpTo(step){
     if ( step < 0 || step >= this.state.history.length ){
@@ -229,8 +225,6 @@ export function calculateWinner(squares, ai = false){
   return null;
 }
 // ========================================
-
-const p = new Player();
 ReactDOM.render(
   <Game/>,
   document.getElementById('root')
