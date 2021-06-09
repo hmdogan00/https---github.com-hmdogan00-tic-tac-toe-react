@@ -117,7 +117,7 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol id="list">{this.state.ascending ? moves : moves.reverse()}</ol>
+          <ul style={{color:"white"}} id="list">{this.state.ascending ? moves : moves.reverse()}</ul>
           <button onClick={ () => this.setState({ascending: !this.state.ascending}) }>Toggle Ascending/Descending</button>
           <div>
             <p style={{display:"inline-block"}}>Toggle Dark Mode: </p>
@@ -150,6 +150,7 @@ class Game extends React.Component {
     const gameInfo = document.getElementsByClassName("game-info")[0];
     const status = gameInfo.getElementsByTagName("div")[0]
     const toggleText = gameInfo.getElementsByTagName("p")[0]
+    const list = gameInfo.getElementsByTagName("ul")[0]
     if ( inp ){
       body.style = "background-color: black;"
       for (let i of squares){
@@ -157,6 +158,7 @@ class Game extends React.Component {
       }
       status.style = "color: #fff"
       toggleText.style = "color: #fff; display:inline-block"
+      list.style = "color:#000"
     }
     else{
       body.style = "background-color: #fff;"
@@ -165,6 +167,7 @@ class Game extends React.Component {
       }
       status.style = "color: #000"
       toggleText.style = "color: #000; display:inline-block"
+      list.style = "color:#fff"
     }
   }
 }
