@@ -156,6 +156,9 @@ class Game extends React.Component {
     }
     else{
       body.style = "background-color: #fff;"
+      for (let i of squares){
+        i.style = "border: 1px solid #999; background: #fff"
+      }
     }
   }
 }
