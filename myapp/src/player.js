@@ -6,38 +6,33 @@ export default class Player {
         this.nodesMap = new Map();
     }
     
-    getAvailableMoves(arr){
-        const moves = []
-        arr.forEach((cell, index) => {
-            if ( !cell ) moves.push(index);
-            });
-        return moves;
-    }
-
     getBestMove(arr, maximizing = true, callback = () => {}, depth = 0){
         // clear nodesMap if the function is called the first time for a new move
         if ( depth === 0) this.nodesMap.clear();
 
         const win = calculateWinner(arr, true)
-        if ( (win === "O" || win === "X") || depth === this.maxDepth ){
-            if ( win === "O" ){
+        const availMoves = getAvailableMoves(arr);
+        if ( (win === "X" || win === "O") || depth === this.maxDepth ){
+            if ( win === "X" ){
                 return 100 - depth;
             }
-            else if ( win === "X"){
+            else if ( win === "O"){
                 return -100 + depth;
             }
+            return 0;
+        }
+        if ( availMoves.length === 0 ){
             return 0;
         }
         if ( maximizing ){
             // initialize best value to lowest possible value
             let best = -100;
             // loop thru all available cells
-            const availMoves = this.getAvailableMoves(arr)
             availMoves.forEach(index => {
 
                 // initialize a new board that is a copy of the current state
                 const child = arr.slice();
-                child[index] = "O";
+                child[index] = "X";
                 const nodeValue = this.getBestMove(child, false, callback, depth + 1);
                 best = Math.max(best, nodeValue)
                 if ( depth === 0){
@@ -64,11 +59,10 @@ export default class Player {
             // initialize best value to highest possible value
             let best = 100;
             // loop thru all available cells
-            const availMoves = this.getAvailableMoves(arr)
             availMoves.forEach(index => {
                 // initialize a new board that is a copy of the current state
                 const child = arr.slice();
-                child[index] = "X";
+                child[index] = "O";
                 const nodeValue = this.getBestMove(child, true, callback, depth + 1);
                 best = Math.min(best, nodeValue)
                 if ( depth === 0 ){
@@ -96,3 +90,10 @@ export default class Player {
     }
 }
 
+export function getAvailableMoves(arr){
+    const moves = []
+    arr.forEach((cell, index) => {
+        if ( !cell ) moves.push(index);
+        });
+    return moves;
+}

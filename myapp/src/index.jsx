@@ -60,8 +60,17 @@ class Game extends React.Component {
       return;
     }
     squares[i] = this.state.xIsNext ? "X" : "O";
-    if( this.state.xIsNext ){
+    if ( this.state.xIsNext && this.state.stepNumber < 8){
       this.aiPlay(squares,i);
+    }
+    else if ( this.state.stepNumber >= 8 ){
+      this.setState({
+        history: history.concat([
+          {squares:squares, rowMove: Math.floor(i / 3 + 1), colMove: i % 3 + 1},
+        ]), 
+        stepNumber: history.length,
+        xIsNext: true
+      });
     }
   }
   aiPlay(squares,userMove){
