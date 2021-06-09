@@ -43,6 +43,7 @@ class Game extends React.Component {
       }],
       stepNumber: 0,
       ascending: true,
+      isLight:true,
       xIsNext: true
     };
     document.onkeydown = this.checkKey
@@ -71,8 +72,14 @@ class Game extends React.Component {
     })
     const board = document.getElementById("board");
     for ( let i = 0; i < 9; i++ ){
-      board.children[Math.floor(i / 3)].children[i % 3].style = ""
+      if ( this.state.isLight ){
+        board.children[Math.floor(i / 3)].children[i % 3].style = ""
+      }
+      else{
+        board.children[Math.floor(i / 3)].children[i % 3].style = "background-color:#999"
+      }
     }
+    this.setMode();
     const lis = document.getElementById("list");
     const moves = lis.children;
     for ( let i = 0; i < this.state.history.length; i++ ){
@@ -141,7 +148,6 @@ class Game extends React.Component {
       this.jumpTo(step + 1)
     }
   }
-
   setMode(){
     const inp = document.getElementsByTagName("input")[0].checked
     const body = document.getElementsByTagName("body")[0]
@@ -169,6 +175,7 @@ class Game extends React.Component {
       toggleText.style = "color: #000; display:inline-block"
       list.style = "color:#fff"
     }
+    this.setState({isLight: !this.state.isLight});
   }
 }
 
