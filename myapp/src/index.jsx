@@ -34,14 +34,16 @@ class Board extends React.Component {
 }
   
 class Game extends React.Component {
+  //-------------CONSTRUCTOR START------------------------
   constructor(props){
     super(props);
+    // initialize player instance
     const p = new Player();
     this.player = p;
+    // initialize state
     this.state = {
       history: [{
         squares: Array(9).fill(null),
-        //squares: ["X", "O", null, null, null, null, "O", null, null],
         rowMove: null,
         colMove: null,
       }],
@@ -50,19 +52,26 @@ class Game extends React.Component {
       isLight:true,
       xIsNext: true
     };
+    // initialize button press
     document.onkeydown = this.checkKey
   }
+  //-------------CONSTRUCTOR END------------------------
+  //-------------HANDLE CLICK START------------------------
   handleClick(i){
+    // initialize history, current state and current square array
     const history = this.state.history.slice(0, this.state.stepNumber + 1 );
     const current = history[history.length - 1];
     const squares = current.squares.slice();
+    // if there is a winner or square is clicked, ignore
     if ( calculateWinner(squares) || squares[i] ){
       return;
     }
     squares[i] = this.state.xIsNext ? "X" : "O";
+    // if there is room for AI to play, then make it play by giving user's input
     if ( this.state.xIsNext && this.state.stepNumber < 8){
       this.aiPlay(squares,i);
     }
+    // if there is only human room for play, i.e. game is at 8th step, enter only human play
     else if ( this.state.stepNumber >= 8 ){
       this.setState({
         history: history.concat([
@@ -73,11 +82,14 @@ class Game extends React.Component {
       });
     }
   }
+  //-------------HANDLE CLICK END------------------------
+  //-------------AI'S TURN START------------------------
   aiPlay(squares,userMove){
+    // initialize history, get index of the best square and initialize the array that the AI's move will be made
     const history = this.state.history.slice(0, this.state.stepNumber + 1 );
     const index = this.player.getBestMove(squares.slice(), false)
-    console.log(index)
     const nextSquares = squares.slice();
+    // make the best move and set the state accordingly (both user and AI moves here)
     nextSquares[index] = "O";
     this.setState({
         history: history.concat([
@@ -88,7 +100,10 @@ class Game extends React.Component {
         xIsNext: true
       });
   }
+  //-------------AI'S TURN END------------------------
+  //-------------MOVE LIST FUNCTIONALITY------------------------
   jumpTo(step){
+    // boundary condition: step needs to be between 0 and history length
     if ( step < 0 || step >= this.state.history.length ){
       return;
     }
@@ -116,6 +131,8 @@ class Game extends React.Component {
     moves[step].style = "font-weight:bold;";
     moves[step].children[0].style = "font-weight:bold; background-color: darkgray;";
   }
+  //-------------MOVE LIST FUNCTONALITY END------------------------
+  //-------------RENDER START------------------------
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
@@ -163,6 +180,8 @@ class Game extends React.Component {
       </div>
     );
   }
+  //-------------RENDER END------------------------
+  //-------------ON KEY DOWN FUNCTION START------------------------
   checkKey = (e) => {
     // if left arrow klicked
     if ( e.keyCode === 37 ){
@@ -177,6 +196,8 @@ class Game extends React.Component {
       this.jumpTo(step + 1)
     }
   }
+  //-------------ON KEY DOWN FUNCTION END------------------------
+  //-------------DARK/LIGHT MODE------------------------
   setMode(){
     const inp = document.getElementsByTagName("input")[0].checked
     const body = document.getElementsByTagName("body")[0]
@@ -207,7 +228,9 @@ class Game extends React.Component {
     this.setState({isLight: !this.state.isLight});
   }
 }
+//-------------DARK-LIGHT MODE------------------------
 
+//-------------CALCULATE WINNER FUNCTION------------------------
 export function calculateWinner(squares, ai = false){
   const lines = [
     [0,1,2],

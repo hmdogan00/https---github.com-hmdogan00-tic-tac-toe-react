@@ -66,7 +66,6 @@ export default class Player {
                 const nodeValue = this.getBestMove(child, true, callback, depth + 1);
                 best = Math.min(best, nodeValue)
                 if ( depth === 0 ){
-                    console.log(best)
                     const moves = this.nodesMap.has(nodeValue) ? (this.nodesMap.get(nodeValue) + "," + index) : index;
                     this.nodesMap.set(nodeValue, moves);
                 }
