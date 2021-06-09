@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import Player from "./player.js"
 
 function Square(props){
   return (
@@ -35,6 +36,8 @@ class Board extends React.Component {
 class Game extends React.Component {
   constructor(props){
     super(props);
+    const p = new Player();
+    this.player = p;
     this.state = {
       history: [{
         squares: Array(9).fill(null),
@@ -61,6 +64,24 @@ class Game extends React.Component {
         stepNumber: history.length,
         xIsNext: !this.state.xIsNext
       });
+    /*const index = p.getBestMove(squares)
+    if ( index === null ){
+      const map = p.nodesMap;
+      let val = -100
+      let move;
+      while ( true ){
+        move = map.get(val)
+        console.log(move);
+        val++;
+        if ( typeof move === 'string' ){
+          this.handleClick(parseInt(move.substring(0,1)))
+          break;
+        }
+      }
+    }
+    else{
+      this.handleClick(index);
+    }*/
   }
   jumpTo(step){
     if ( step < 0 || step >= this.state.history.length ){
@@ -116,20 +137,23 @@ class Game extends React.Component {
     }
     return (
       <div className="game">
+        <div className="move-list">
+          <ul style={{color:"white", grid_area:"moves"}} id="list">{this.state.ascending ? moves : moves.reverse()}</ul>
+          <button className=" toggle-btn" onClick={ () => this.setState({ascending: !this.state.ascending}) }>Toggle Ascending/Descending</button>
+        </div>
+        <div className="game-info">
+          <div>{status}</div>
+          
+          <div>
+            <p style={{display:"inline-block"}}>Toggle Dark Mode: </p>
+            <input type="checkbox" onClick={ () => this.setMode()}></input>
+          </div>
+        </div>
         <div className="game-board">
           <Board 
             squares={current.squares}
             onClick={(i) => this.handleClick(i)}
           />
-        </div>
-        <div className="game-info">
-          <div>{status}</div>
-          <ul style={{color:"white"}} id="list">{this.state.ascending ? moves : moves.reverse()}</ul>
-          <button onClick={ () => this.setState({ascending: !this.state.ascending}) }>Toggle Ascending/Descending</button>
-          <div>
-            <p style={{display:"inline-block"}}>Toggle Dark Mode: </p>
-            <input type="checkbox" onClick={ () => this.setMode()}></input>
-          </div>
         </div>
       </div>
     );
@@ -155,8 +179,8 @@ class Game extends React.Component {
     const squares = board.getElementsByTagName("button")
     const gameInfo = document.getElementsByClassName("game-info")[0];
     const status = gameInfo.getElementsByTagName("div")[0]
-    const toggleText = gameInfo.getElementsByTagName("p")[0]
-    const list = gameInfo.getElementsByTagName("ul")[0]
+    const toggleText = document.getElementsByTagName("p")[0]
+    const list = document.getElementsByTagName("ul")[0]
     if ( inp ){
       body.style = "background-color: black;"
       for (let i of squares){
@@ -179,7 +203,7 @@ class Game extends React.Component {
   }
 }
 
-function calculateWinner(squares){
+export function calculateWinner(squares, ai = false){
   const lines = [
     [0,1,2],
     [3,4,5],
@@ -193,16 +217,20 @@ function calculateWinner(squares){
   for ( let i = 0; i < lines.length; i++){
     const [a,b,c] = lines[i];
     if ( squares[a] && squares[a] === squares[b] && squares[a] === squares[c] ){
+      if ( !ai ){
       const board = document.getElementById("board");
       board.children[Math.floor(a / 3)].children[a % 3].style = "background-color:green;"
       board.children[Math.floor(b / 3)].children[b % 3].style = "background-color:green;"
       board.children[Math.floor(c / 3)].children[c % 3].style = "background-color:green;"
+      }
       return squares[a];
     }
   }
   return null;
 }
 // ========================================
+
+const p = new Player();
 ReactDOM.render(
   <Game/>,
   document.getElementById('root')
