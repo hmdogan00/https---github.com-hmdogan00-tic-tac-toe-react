@@ -147,18 +147,24 @@ class Game extends React.Component {
     const body = document.getElementsByTagName("body")[0]
     const board = document.getElementById("board");
     const squares = board.getElementsByTagName("button")
-    console.log(squares);
+    const gameInfo = document.getElementsByClassName("game-info")[0];
+    const status = gameInfo.getElementsByTagName("div")[0]
+    const toggleText = gameInfo.getElementsByTagName("p")[0]
     if ( inp ){
       body.style = "background-color: black;"
       for (let i of squares){
         i.style = "border: 1px solid #fff; background: #999"
       }
+      status.style = "color: #fff"
+      toggleText.style = "color: #fff; display:inline-block"
     }
     else{
       body.style = "background-color: #fff;"
       for (let i of squares){
         i.style = "border: 1px solid #999; background: #fff"
       }
+      status.style = "color: #000"
+      toggleText.style = "color: #000; display:inline-block"
     }
   }
 }
