@@ -1,4 +1,4 @@
-import {calculateWinner} from "./index.jsx";
+import {calculateWinner} from "./ai-mode.jsx";
 
 export default class Player {
     constructor(maxDepth = -1){
